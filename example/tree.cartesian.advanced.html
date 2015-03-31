@@ -35,9 +35,14 @@
       <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
           <div id="editor_holder" class="prop-edit"></div>
+          <div>
+            <button id="create_random_tree" class="btn btn-default">Create random tree</button>
+          </div>
         </div>
+
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
           <h1 class="page-header">tree.cartesian</h1>
+
           <div id="vis"></div>
         </div>
       </div>
@@ -55,25 +60,43 @@
     <script>
       (function() {
 
+        var tree;
+
+        var options = {
+          levelGap: "auto",
+          collapsible: 1
+        };
+
+
+        function drawTree(options, json) {
+          $("#vis").empty();
+
+          var tree = d3.select("#vis").append("svg")
+
+            .chart("tree.cartesian")
+            .margin({ top: 0, right: 180, bottom: 0, left: 40 })
+            .radius(function(d) { if( d.size ) return Math.log(d.size); else return 7; })
+            .sort(function(a, b) { return d3.descending(a.size, b.size); })
+            .zoomable([0.1, 3]);
+
+          applyOptions(tree, options);
+
+          tree.draw(json);
+
+          return tree;
+        }
+
+        function applyOptions(tree, options) {
+          console.log(">>> Applying options:");
+          console.log(options);
+
+          tree
+            .levelGap(options.levelGap)
+            .collapsible(options.collapsible == "none" ? null : parseInt(options.collapsible));
+        }
+
+
         d3.json("data/flare.json", function(error, json) {
-
-          function drawTree(options) {
-            $("#vis").empty();
-
-            var tree = d3.select("#vis").append("svg")
-
-                .chart("tree.cartesian")
-                  .margin({ top: 0, right: 180, bottom: 0, left: 40 })
-                  .radius(function(d) { if( d.size ) return Math.log(d.size); else return 3; })
-                  .sort(function(a, b) { return d3.descending(a.size, b.size); })
-                  .zoomable([0.1, 3]);
-
-            applyOptions(tree, options);
-
-            tree.draw(json);
-
-            return tree;
-          }
 
           var propSchema = {
             type: "object",
@@ -84,24 +107,7 @@
             }
           };
 
-
-          var options = {
-            levelGap: "auto",
-            collapsible: 1
-          };
-
-          var tree = drawTree(options);
-
-
-          function applyOptions(tree, options) {
-            console.log(">>> Applying options:");
-            console.log(options);
-
-            tree
-              .levelGap(options.levelGap)
-              .collapsible(options.collapsible == "none" ? null : parseInt(options.collapsible));
-          }
-
+          tree = drawTree(options, json);
 
           // Editor
           JSONEditor.defaults.options.theme = 'bootstrap3';
@@ -121,6 +127,45 @@
           editor.on("change",  function() {
             applyOptions(tree, editor.getValue());
           });
+        });
+
+        function generateRandomTree(levels, maxChildrenPerParent) {
+          var root = {
+            name: 'root',
+            children: []
+          };
+
+          function generateChildren(currentRoot, level) {
+            if (level > levels)
+              return;
+
+            var numChildren = Math.floor((Math.random() * maxChildrenPerParent) + 1);
+            for(var i = 0; i < numChildren; i++) {
+              var child = {
+                name: "child " + level + "-" + (i + 1),
+                children: []
+              };
+
+              currentRoot.children.push(child);
+
+              generateChildren(child, level + 1);
+            }
+          }
+
+          generateChildren(root, 1);
+
+          return root;
+        }
+
+
+        $(function() {
+          $('#create_random_tree').click(function() {
+            var json = generateRandomTree(3, 5);
+
+            //tree = drawTree(options, json);
+            // TODO: tree should render new data when draw is invoked.
+            tree.draw(json);
+          })
         });
 
       })();
