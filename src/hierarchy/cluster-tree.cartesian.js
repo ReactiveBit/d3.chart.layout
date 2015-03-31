@@ -6,6 +6,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     var chart = this;
 
     chart.margin(chart._margin || {});
+    chart.levelGap(chart._levelGap || "auto");
 
     chart.d3.diagonal = d3.svg.diagonal().projection(function(d) { return [d.y, d.x]; });
 
@@ -63,6 +64,9 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
 //    nodes.forEach(function(d) { d.y = d.depth * 180; });
 
+    if (chart._levelGap && chart._levelGap != "auto")
+      nodes.forEach(function(d) { d.y = d.depth * chart._levelGap; });
+
     chart.on("transform:stash", function() {
       nodes.forEach(function(d) {
         d.x0 = d.x;
@@ -92,6 +96,21 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
     return this;
   },
+
+  // TODO: document method
+  levelGap: function(value) {
+    if (!arguments.length)
+      return this._levelGap;
+
+    this._levelGap = value;
+    this.trigger("change:levelGap");
+
+    if (this.root)
+      this.draw(this.root);
+
+    return this;
+  }
+
 });
 
 
