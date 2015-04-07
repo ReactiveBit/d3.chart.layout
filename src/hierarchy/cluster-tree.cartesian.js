@@ -20,6 +20,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
         .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; });
     });
 
+
     chart.layers.nodes.on("merge:transition", function() {
       this.duration(chart._duration)
         .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
@@ -46,7 +47,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
     chart.source = root;
 
-    if( ! chart.root ) {
+    if (!chart._internalUpdate) {
       chart.root    = root;
       chart.root.x0 = chart._height / 2;
       chart.root.y0 = 0;
@@ -62,8 +63,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
       //.size([chart._height, chart._width])
       .nodes(chart.root).reverse();
 
-//    nodes.forEach(function(d) { d.y = d.depth * 180; });
-
+    // Adjust gap between node levels.
     if (chart._levelGap && chart._levelGap != "auto")
       nodes.forEach(function(d) { d.y = d.depth * chart._levelGap; });
 
@@ -97,7 +97,15 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     return this;
   },
 
-  // TODO: document method
+
+  /**
+   * Sets a gap between node levels. Acceps eithe number of pixels or string
+   * "auto". When level gap set to "auto", gap between node levels will be
+   * maximized, so the tree takes full width.
+   *
+   * @param value
+   * @returns {*}
+   */
   levelGap: function(value) {
     if (!arguments.length)
       return this._levelGap;

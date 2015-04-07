@@ -18,6 +18,9 @@ d3.chart("hierarchy", {
     this.d3      = {};
     this.layers  = {};
 
+    // List of enabled features. They are only used to check whether a feature
+    // was already enabled, to avoid multiple event handler bindings etc.
+    this._features = {};
 
     this.base.attr("width",  this.base.node().parentElement.clientWidth);
     this.base.attr("height", this.base.node().parentElement.clientHeight);
@@ -45,12 +48,6 @@ d3.chart("hierarchy", {
         }
       }
     };
-  },
-
-
-
-  transform: function(root) {
-    return root;
   },
 
 
@@ -131,6 +128,30 @@ d3.chart("hierarchy", {
 
     return chart;
   },
+
+
+  /**
+   * Checks whether specified feature was already enabled. Used to prevent
+   * multiple event bindings.
+   *
+   * @param featureName Name of the feature.
+   */
+  _isFeatureEnabled: function(featureName) {
+    return this._features[featureName];
+  },
+
+
+  /**
+   * Marks feature as enabled of disabled. Should be used in functions that
+   * control certain features.
+   *
+   * @param featureName Name of the feature.
+   * @param isEnabled Feature status to set: true - mark feature as enabled,
+   *                  false - mark as disabled.
+   */
+  _setFeatureEnabled: function(featureName, isEnabled) {
+    this._features[featureName] = isEnabled;
+  }
 });
 
 
@@ -217,7 +238,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
           this.select("text")
             .style("fill-opacity", 0);
-        },
+        }
       }
     });
 
@@ -255,8 +276,8 @@ d3.chart("hierarchy").extend("cluster-tree", {
               return chart.d3.diagonal({ source: o, target: o });
             })
             .remove();
-        },
-      },
+        }
+      }
     });
   },
 
@@ -292,6 +313,11 @@ d3.chart("hierarchy").extend("cluster-tree", {
   collapsible: function(_) {
     var chart = this;
 
+    if (this._isFeatureEnabled('collapsible'))
+      return;
+
+    this._setFeatureEnabled('collapsible', true);
+
     var depth = _;
 
     chart.once("collapse:init", function() {
@@ -321,8 +347,14 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
     chart.on("singleClick", function(d) {
       d = toggle(d);
+
       chart.trigger("transform:stash");
+
+      // Set _internalUpdate, so chart will know that certain actions shouldn't
+      // be performed during update.
+      chart._internalUpdate = true;
       chart.draw(d);
+      chart._internalUpdate = false;
     });
 
 
@@ -347,7 +379,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
     }
 
     return chart;
-  },
+  }
 });
 
 
@@ -373,6 +405,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
         .attr("x", function(d) { return d.children || d._children ? -10 : 10; })
         .attr("text-anchor", function(d) { return d.children || d._children ? "end" : "start"; });
     });
+
 
     chart.layers.nodes.on("merge:transition", function() {
       this.duration(chart._duration)
@@ -400,7 +433,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
 
     chart.source = root;
 
-    if( ! chart.root ) {
+    if (!chart._internalUpdate) {
       chart.root    = root;
       chart.root.x0 = chart._height / 2;
       chart.root.y0 = 0;
@@ -416,8 +449,7 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
       //.size([chart._height, chart._width])
       .nodes(chart.root).reverse();
 
-//    nodes.forEach(function(d) { d.y = d.depth * 180; });
-
+    // Adjust gap between node levels.
     if (chart._levelGap && chart._levelGap != "auto")
       nodes.forEach(function(d) { d.y = d.depth * chart._levelGap; });
 
@@ -451,7 +483,15 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     return this;
   },
 
-  // TODO: document method
+
+  /**
+   * Sets a gap between node levels. Acceps eithe number of pixels or string
+   * "auto". When level gap set to "auto", gap between node levels will be
+   * maximized, so the tree takes full width.
+   *
+   * @param value
+   * @returns {*}
+   */
   levelGap: function(value) {
     if (!arguments.length)
       return this._levelGap;

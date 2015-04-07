@@ -80,7 +80,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
           this.select("text")
             .style("fill-opacity", 0);
-        },
+        }
       }
     });
 
@@ -118,8 +118,8 @@ d3.chart("hierarchy").extend("cluster-tree", {
               return chart.d3.diagonal({ source: o, target: o });
             })
             .remove();
-        },
-      },
+        }
+      }
     });
   },
 
@@ -155,6 +155,11 @@ d3.chart("hierarchy").extend("cluster-tree", {
   collapsible: function(_) {
     var chart = this;
 
+    if (this._isFeatureEnabled('collapsible'))
+      return;
+
+    this._setFeatureEnabled('collapsible', true);
+
     var depth = _;
 
     chart.once("collapse:init", function() {
@@ -184,8 +189,14 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
     chart.on("singleClick", function(d) {
       d = toggle(d);
+
       chart.trigger("transform:stash");
+
+      // Set _internalUpdate, so chart will know that certain actions shouldn't
+      // be performed during update.
+      chart._internalUpdate = true;
       chart.draw(d);
+      chart._internalUpdate = false;
     });
 
 
@@ -210,7 +221,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
     }
 
     return chart;
-  },
+  }
 });
 
 

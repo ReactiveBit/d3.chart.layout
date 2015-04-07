@@ -6,6 +6,9 @@ d3.chart("hierarchy", {
     this.d3      = {};
     this.layers  = {};
 
+    // List of enabled features. They are only used to check whether a feature
+    // was already enabled, to avoid multiple event handler bindings etc.
+    this._features = {};
 
     this.base.attr("width",  this.base.node().parentElement.clientWidth);
     this.base.attr("height", this.base.node().parentElement.clientHeight);
@@ -33,12 +36,6 @@ d3.chart("hierarchy", {
         }
       }
     };
-  },
-
-
-
-  transform: function(root) {
-    return root;
   },
 
 
@@ -119,6 +116,30 @@ d3.chart("hierarchy", {
 
     return chart;
   },
+
+
+  /**
+   * Checks whether specified feature was already enabled. Used to prevent
+   * multiple event bindings.
+   *
+   * @param featureName Name of the feature.
+   */
+  _isFeatureEnabled: function(featureName) {
+    return this._features[featureName];
+  },
+
+
+  /**
+   * Marks feature as enabled of disabled. Should be used in functions that
+   * control certain features.
+   *
+   * @param featureName Name of the feature.
+   * @param isEnabled Feature status to set: true - mark feature as enabled,
+   *                  false - mark as disabled.
+   */
+  _setFeatureEnabled: function(featureName, isEnabled) {
+    this._features[featureName] = isEnabled;
+  }
 });
 
 
