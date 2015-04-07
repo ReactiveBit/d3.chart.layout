@@ -313,8 +313,9 @@ d3.chart("hierarchy").extend("cluster-tree", {
   collapsible: function(_) {
     var chart = this;
 
-    if (this._isFeatureEnabled('collapsible'))
+    if (this._isFeatureEnabled('collapsible')) {
       return;
+    }
 
     this._setFeatureEnabled('collapsible', true);
 
@@ -450,8 +451,9 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
       .nodes(chart.root).reverse();
 
     // Adjust gap between node levels.
-    if (chart._levelGap && chart._levelGap != "auto")
-      nodes.forEach(function(d) { d.y = d.depth * chart._levelGap; });
+    if (chart._levelGap && chart._levelGap !== "auto") {
+      nodes.forEach(function (d) { d.y = d.depth * chart._levelGap; });
+    }
 
     chart.on("transform:stash", function() {
       nodes.forEach(function(d) {
@@ -493,14 +495,16 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
    * @returns {*}
    */
   levelGap: function(value) {
-    if (!arguments.length)
+    if (!arguments.length) {
       return this._levelGap;
+    }
 
     this._levelGap = value;
     this.trigger("change:levelGap");
 
-    if (this.root)
+    if (this.root) {
       this.draw(this.root);
+    }
 
     return this;
   }
@@ -551,7 +555,7 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
         nodes;
     chart.source = root;
 
-    if( ! chart.root ) {
+    if(!chart._internalUpdate) {
       chart.root    = root;
       chart.root.x0 = 360;
       chart.root.y0 = 0;
@@ -598,7 +602,7 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
     }
 
     return this;
-  },
+  }
 });
 
 

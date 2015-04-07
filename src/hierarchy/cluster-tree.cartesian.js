@@ -64,8 +64,9 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
       .nodes(chart.root).reverse();
 
     // Adjust gap between node levels.
-    if (chart._levelGap && chart._levelGap != "auto")
-      nodes.forEach(function(d) { d.y = d.depth * chart._levelGap; });
+    if (chart._levelGap && chart._levelGap !== "auto") {
+      nodes.forEach(function (d) { d.y = d.depth * chart._levelGap; });
+    }
 
     chart.on("transform:stash", function() {
       nodes.forEach(function(d) {
@@ -107,14 +108,16 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
    * @returns {*}
    */
   levelGap: function(value) {
-    if (!arguments.length)
+    if (!arguments.length) {
       return this._levelGap;
+    }
 
     this._levelGap = value;
     this.trigger("change:levelGap");
 
-    if (this.root)
+    if (this.root) {
       this.draw(this.root);
+    }
 
     return this;
   }

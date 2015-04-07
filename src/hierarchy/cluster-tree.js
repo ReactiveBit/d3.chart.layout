@@ -155,8 +155,9 @@ d3.chart("hierarchy").extend("cluster-tree", {
   collapsible: function(_) {
     var chart = this;
 
-    if (this._isFeatureEnabled('collapsible'))
+    if (this._isFeatureEnabled('collapsible')) {
       return;
+    }
 
     this._setFeatureEnabled('collapsible', true);
 
