@@ -1,6 +1,8 @@
 
 # d3.chart.layout.hierarchy
 
+[![Join the chat at https://gitter.im/ReactiveBit/d3.chart.layout.hierarchy](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ReactiveBit/d3.chart.layout.hierarchy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Collection of interactive and reusable [D3 hierarchy layouts](https://github.com/mbostock/d3/wiki/Hierarchy-Layout) built with [d3.Chart](http://misoproject.com/d3-chart/) framework.
 
 
