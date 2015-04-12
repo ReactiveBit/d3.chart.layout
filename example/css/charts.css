@@ -10,22 +10,41 @@
     padding: 4px;
 }
 
-.node {
+.tree .node {
     cursor: pointer;
 }
 
-.node circle {
+.tree .node circle {
     fill: #fff;
     stroke: steelblue;
     stroke-width: 2px;
 }
 
-.node text {
+.tree .node text {
     font-size: 11px;
 }
 
-path.link {
-    fill: none;
-    stroke: #ccc;
-    stroke-width: 2px;
+.tree path.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
+
+/* pack.nested */
+
+.pack-nested circle {
+  fill: #ccc;
+  stroke: #999;
+}
+
+.pack-nested .parent circle {
+  fill: #1f77b4;
+  fill-opacity: 0.1;
+  stroke: steelblue;
+}
+
+.pack-nested .parent:hover circle {
+  stroke: #ff7f0e;
+  stroke-width: 1px;
 }

@@ -4,5 +4,6 @@ gist
 
 # IDE files
 .idea/
+*.iml
 
 *.log
