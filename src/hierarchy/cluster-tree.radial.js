@@ -40,7 +40,7 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
         nodes;
     chart.source = root;
 
-    if( ! chart.root ) {
+    if(!chart._internalUpdate) {
       chart.root    = root;
       chart.root.x0 = 360;
       chart.root.y0 = 0;
@@ -87,7 +87,7 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
     }
 
     return this;
-  },
+  }
 });
 
 

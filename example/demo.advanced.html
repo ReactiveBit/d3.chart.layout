@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cartesian Tree Example</title>
+
+  <link rel="stylesheet"
+        href="../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/charts.css">
+</head>
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+              aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">d3.chart.layout.hierarchy</a>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar">
+      <ul class="nav navbar-nav" id="page_list"></ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-3 col-md-2 sidebar">
+      <div id="editor_holder" class="prop-edit"></div>
+      <div>
+        <button id="create_random_tree" class="btn btn-default">Create random
+          tree
+        </button>
+      </div>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <h1 class="page-header">tree demo</h1>
+
+      <div id="chart"></div>
+    </div>
+  </div>
+</div>
+
+<script src="../bower_components/d3/d3.js"></script>
+<script src="../bower_components/d3.chart/d3.chart.js"></script>
+<script src="../bower_components/jquery/dist/jquery.js"></script>
+<script src="../bower_components/json-editor/dist/jsoneditor.js"></script>
+<script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+
+<script src="../d3.chart.layout.hierarchy.js"></script>
+<script src="js/chart_demo.utils.js"></script>
+<script src="js/demo_trees.js"></script>
+
+
+<script>
+  $(function () {
+    ChartDemo.init({
+      chartContainer: $("#chart"),
+      navigationContainer: $("#page_list"),
+      editorContainer: $("#editor_holder")
+    });
+
+    $('#create_random_tree').click(function() {
+      var json = ChartDemo.generateRandomTree(4, 5);
+      ChartDemo.draw(json);
+    });
+  });
+</script>
+
+</body>
+</html>

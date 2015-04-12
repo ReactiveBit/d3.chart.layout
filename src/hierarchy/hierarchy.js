@@ -2,24 +2,34 @@
 d3.chart("hierarchy", {
 
   initialize: function() {
+    var chart = this;
 
-    this.d3      = {};
-    this.layers  = {};
+    chart.d3      = {};
+    chart.layers  = {};
 
+    // List of enabled features. They are only used to check whether a feature
+    // was already enabled, to avoid multiple event handler bindings etc.
+    this._features = {};
 
-    this.base.attr("width",  this.base.node().parentElement.clientWidth);
-    this.base.attr("height", this.base.node().parentElement.clientHeight);
+    chart.base.attr("width",  chart.base.node().parentElement.clientWidth);
+    chart.base.attr("height", chart.base.node().parentElement.clientHeight);
 
-    this.d3.zoom = d3.behavior.zoom();
-    this.layers.base = this.base.append("g");
+    chart.d3.zoom = d3.behavior.zoom();
+    chart.layers.base = chart.base.append("g");
     
-    this.name(this._name         || "name");
-    this.value(this._value       || "value");
-    this.duration(this._duration || 750);
+    chart.name(chart._name         || "name");
+    chart.value(chart._value       || "value");
+    chart.duration(chart._duration || 750);
+
+
+
+    chart.on("change:value", function() {
+      chart.d3.layout.value(function(d) { return chart._value === "_COUNT" ? 1 : d[chart._value]; });
+    });
 
 
     // http://bl.ocks.org/robschmuecker/7926762
-    this.walker = function(parent, walkerFunction, childrenFunction) {
+    chart.walker = function(parent, walkerFunction, childrenFunction) {
       if( ! parent ) {
         return;
       }
@@ -28,17 +38,11 @@ d3.chart("hierarchy", {
 
       var children = childrenFunction(parent);
       if( children ) {
-        for (var count = children.length, i = 0; i < count; i++) {
-          this.walker( children[i], walkerFunction, childrenFunction );
+        for( var count = children.length, i = 0; i < count; i++ ) {
+          chart.walker( children[i], walkerFunction, childrenFunction );
         }
       }
     };
-  },
-
-
-
-  transform: function(root) {
-    return root;
   },
 
 
@@ -119,6 +123,30 @@ d3.chart("hierarchy", {
 
     return chart;
   },
+
+
+  /**
+   * Checks whether specified feature was already enabled. Used to prevent
+   * multiple event bindings.
+   *
+   * @param featureName Name of the feature.
+   */
+  _isFeatureEnabled: function(featureName) {
+    return this._features[featureName];
+  },
+
+
+  /**
+   * Marks feature as enabled of disabled. Should be used in functions that
+   * control certain features.
+   *
+   * @param featureName Name of the feature.
+   * @param isEnabled Feature status to set: true - mark feature as enabled,
+   *                  false - mark as disabled.
+   */
+  _setFeatureEnabled: function(featureName, isEnabled) {
+    this._features[featureName] = isEnabled;
+  }
 });
 
 
