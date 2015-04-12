@@ -10,14 +10,56 @@
     padding: 4px;
 }
 
+
+/* Tree colors */
+
+/* TODO: move to SCSS */
+
+/* Color palette */
+.color-primary-0 { color: #4B6DC3 }	/* Main Primary color */
+.color-primary-1 { color: #9CB2E8 }
+.color-primary-2 { color: #6E8BD5 }
+.color-primary-3 { color: #2E54B1 }
+.color-primary-4 { color: #133998 }
+
+
 .tree .node {
+  cursor: default;
+}
+
+.tree .node.node-parent {
     cursor: pointer;
 }
 
+/* TODO: fix transitions */
+
 .tree .node circle {
     fill: #fff;
-    stroke: steelblue;
-    stroke-width: 2px;
+    stroke: #2E54B1;
+    stroke-width: 1px;
+    /*transition: fill 1250ms ease-in-out;*/
+}
+
+.tree .node.node-parent:hover circle {
+  stroke: #6E8BD5;
+}
+
+.tree .node.node-parent:hover text {
+  fill: #444;
+}
+
+.tree .node.node-parent circle {
+  fill: #fff;
+  stroke-width: 2px;
+}
+
+.tree .node.node-collapsed circle {
+  fill: #2E54B1;
+  /*transition: fill 1250ms ease-in-out;*/
+}
+
+.tree .node.node-collapsed:hover circle {
+  fill: #6E8BD5;
 }
 
 .tree .node text {

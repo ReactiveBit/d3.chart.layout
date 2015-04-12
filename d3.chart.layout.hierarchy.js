@@ -199,8 +199,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
       events: {
         "enter": function() {
           this.append("circle")
-            .attr("r", 0)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            .attr("r", 0);
 
           this.append("text")
             .attr("dy", ".35em")
@@ -212,13 +211,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
           });
         },
 
+        "merge": function() {
+          // Function .classed() is not available in transition events.
+          this.classed('node-collapsed', function (d) {
+            return d._children != undefined;
+          });
+        },
+
         "merge:transition": function() {
           this.select("circle")
-            .attr("r", chart._radius)
-            .style("stroke", function(d) { return d.path ? "brown" : "steelblue"; })
-            .style("fill", function(d) {
-                return d.path && ! d.parent.path ? "#E2A76F"
-                                                 : d._children ? "lightsteelblue" : "#fff"; });
+            .attr("r", chart._radius);
 
           this.select("text")
             .style("fill-opacity", 1);
