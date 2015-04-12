@@ -19,11 +19,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
     chart.layer("nodes", chart.layers.nodes, {
 
       dataBind: function(data) {
-        return this.selectAll(".node").data(data, function(d) { return d._id || (d._id = ++counter); });
+        return this.selectAll(".node").data(data, function(d) {
+          return d._id || (d._id = ++counter);
+        });
       },
 
       insert: function() {
-        return this.append("g").classed("node", true);
+        return this.append("g")
+          .classed("node", true)
+          .classed("node-leaf", function(d) { return d.isLeaf; })
+          .classed("node-parent", function(d) { return !d.isLeaf; });
       },
 
       events: {

@@ -60,8 +60,15 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     }
 
     nodes = chart.d3.layout
-      //.size([chart._height, chart._width])
+      .size([chart._height, chart._width])
       .nodes(chart.root).reverse();
+
+    // Before we proceed, mark leaf nodes
+    nodes.forEach(function (d) {
+      d.isLeaf = !d.children && !d._children;
+    });
+
+    //console.log(nodes);
 
     // Adjust gap between node levels.
     if (chart._levelGap && chart._levelGap !== "auto") {
