@@ -23,8 +23,12 @@ d3.chart("hierarchy", {
     // was already enabled, to avoid multiple event handler bindings etc.
     this._features = {};
 
-    chart.base.attr("width",  chart.base.node().parentElement.clientWidth);
-    chart.base.attr("height", chart.base.node().parentElement.clientHeight);
+    // Set width and height attributes only if they weren't set explicitly
+    if (!chart.base.attr("width"))
+      chart.base.attr("width",  this.base.node().parentElement.clientWidth);
+
+    if (!chart.base.attr("height"))
+      chart.base.attr("height", this.base.node().parentElement.clientHeight);
 
     chart.d3.zoom = d3.behavior.zoom();
     chart.layers.base = chart.base.append("g");
