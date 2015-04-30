@@ -188,18 +188,22 @@ d3.chart("hierarchy").extend("cluster-tree", {
     chart.layer("nodes", chart.layers.nodes, {
 
       dataBind: function(data) {
-        return this.selectAll(".node").data(data, function(d) { return d._id || (d._id = ++counter); });
+        return this.selectAll(".node").data(data, function(d) {
+          return d._id || (d._id = ++counter);
+        });
       },
 
       insert: function() {
-        return this.append("g").classed("node", true);
+        return this.append("g")
+          .classed("node", true)
+          .classed("node-leaf", function(d) { return d.isLeaf; })
+          .classed("node-parent", function(d) { return !d.isLeaf; });
       },
 
       events: {
         "enter": function() {
           this.append("circle")
-            .attr("r", 0)
-            .style("fill", function(d) { return d._children ? "lightsteelblue" : "#fff"; });
+            .attr("r", 0);
 
           this.append("text")
             .attr("dy", ".35em")
@@ -211,13 +215,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
           });
         },
 
+        "merge": function() {
+          // Function .classed() is not available in transition events.
+          this.classed('node-collapsed', function (d) {
+            return d._children != undefined;
+          });
+        },
+
         "merge:transition": function() {
           this.select("circle")
-            .attr("r", chart._radius)
-            .style("stroke", function(d) { return d.path ? "brown" : "steelblue"; })
-            .style("fill", function(d) {
-                return d.path && ! d.parent.path ? "#E2A76F"
-                                                 : d._children ? "lightsteelblue" : "#fff"; });
+            .attr("r", chart._radius);
 
           this.select("text")
             .style("fill-opacity", 1);
@@ -441,8 +448,15 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     }
 
     nodes = chart.d3.layout
-      //.size([chart._height, chart._width])
+      .size([chart._height, chart._width])
       .nodes(chart.root).reverse();
+
+    // Before we proceed, mark leaf nodes
+    nodes.forEach(function (d) {
+      d.isLeaf = !d.children && !d._children;
+    });
+
+    //console.log(nodes);
 
     // Adjust gap between node levels.
     if (chart._levelGap && chart._levelGap !== "auto") {
