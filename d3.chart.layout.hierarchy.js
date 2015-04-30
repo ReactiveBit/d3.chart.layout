@@ -218,7 +218,7 @@ d3.chart("hierarchy").extend("cluster-tree", {
         "merge": function() {
           // Function .classed() is not available in transition events.
           this.classed('node-collapsed', function (d) {
-            return d._children != undefined;
+            return d._children !== undefined;
           });
         },
 
