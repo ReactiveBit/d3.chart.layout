@@ -9,6 +9,7 @@
   // Public functions
   window.ChartDemo = {
 
+    currentData: null,
     options: {},
 
     init: function (options) {
@@ -64,6 +65,7 @@
 
 
     draw: function(data) {
+      this.currentData = data;
       currentChart.draw(data);
     },
 
@@ -107,6 +109,36 @@
       generateChildren(root, 1);
 
       return root;
+    },
+
+
+    addLeafNode: function () {
+      var data = this.currentData;
+
+      var leaf_list = this.leafNodesList(data);
+      var node = leaf_list[Math.floor(Math.random() * leaf_list.length)];
+
+      var newNode = {
+        name: 'New Node'
+      };
+
+      node.children = node.children || [];
+      node.children.push(newNode);
+
+      this.draw(data);
+    },
+
+
+    removeLeafNode: function () {
+      var data = this.currentData;
+
+      var leaf_list = this.leafNodesList(data);
+      var node = leaf_list[Math.floor(Math.random() * leaf_list.length)];
+
+      var id = node.parent.children.indexOf(node);
+      node.parent.children.splice(id, 1);
+
+      this.draw(data);
     },
 
 
@@ -171,7 +203,50 @@
 
         chartInfo.apply(currentChart, editor.getValue());
       });
+    },
+
+
+    /**
+     * Traverses tree while callback function returns false.
+     * When callback returns true, traverse returns a node which caused
+     * this true value in callback function.
+     *
+     * @param node Node to traverse from.
+     * @param callback Callback that will be called for every node. If true is
+     *                 returned, traversal is stopped and traverse function
+     *                 returns current element.
+     */
+    traverse: function (node, callback) {
+      var stopTraversal = callback(node);
+
+      if (stopTraversal)
+        return node;
+
+      if (node.children) {
+        for (var i = 0; i < node.children.length; i++ ) {
+          var child = node.children[i];
+          var result = this.traverse(child, callback);
+          if (result)
+            return result;
+        }
+      }
+
+      return null;
+    },
+
+    leafNodesList: function (data) {
+      var list = [];
+
+      this.traverse(data, function (node) {
+        if (node.isLeaf)
+          list.push(node);
+      });
+
+      return list;
     }
+
+
+
 
   }
 

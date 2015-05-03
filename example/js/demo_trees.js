@@ -26,7 +26,7 @@ ChartDemo.registerChart({
    * Object format should match propertySchema.
    */
   defaults: {
-    levelGap: "auto"
+    levelGap: 200
   },
 
 

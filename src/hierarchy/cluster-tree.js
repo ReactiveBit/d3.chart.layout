@@ -26,13 +26,13 @@ d3.chart("hierarchy").extend("cluster-tree", {
 
       insert: function() {
         return this.append("g")
-          .classed("node", true)
-          .classed("node-leaf", function(d) { return d.isLeaf; })
-          .classed("node-parent", function(d) { return !d.isLeaf; });
+          .classed("node", true);
       },
 
       events: {
         "enter": function() {
+          chart._initNode(this);
+
           this.append("circle")
             .attr("r", 0);
 
@@ -47,6 +47,11 @@ d3.chart("hierarchy").extend("cluster-tree", {
         },
 
         "merge": function() {
+          // Set additional node classes as they may change during manipulations
+          // with data. For example, a node is added to another leaf node, so
+          // ex-leaf node should change its class from node-leaf to node-parent.
+          chart._initNode(this);
+
           // Function .classed() is not available in transition events.
           this.classed('node-collapsed', function (d) {
             return d._children !== undefined;
@@ -111,6 +116,18 @@ d3.chart("hierarchy").extend("cluster-tree", {
         }
       }
     });
+  },
+
+  /**
+   * Initializes node attributes.
+   *
+   * @param node SVG element that represents node.
+   * @private
+   */
+  _initNode: function(node) {
+    node
+      .classed("node-leaf", function(d) { return d.isLeaf; })
+      .classed("node-parent", function(d) { return !d.isLeaf; });
   },
 
 

@@ -35,9 +35,25 @@
     <div class="col-sm-3 col-md-2 sidebar">
       <div id="editor_holder" class="prop-edit"></div>
       <div>
-        <button id="create_random_tree" class="btn btn-default">Create random
-          tree
-        </button>
+        <ul class="list-unstyled">
+          <li>
+            <button id="create_random_tree" class="btn btn-default">
+              Create random tree
+            </button>
+          </li>
+          <li>
+            <button id="add_leaf_node" class="btn btn-default">
+              Add leaf node
+            </button>
+          </li>
+          <li>
+            <button id="remove_leaf_node" class="btn btn-default">
+              Remove leaf node
+            </button>
+          </li>
+        </ul>
+
+
       </div>
     </div>
 
@@ -69,8 +85,16 @@
     });
 
     $('#create_random_tree').click(function() {
-      var json = ChartDemo.generateRandomTree(4, 5);
+      var json = ChartDemo.generateRandomTree(3, 3);
       ChartDemo.draw(json);
+    });
+
+    $('#add_leaf_node').click(function() {
+      ChartDemo.addLeafNode();
+    });
+
+    $('#remove_leaf_node').click(function() {
+      ChartDemo.removeLeafNode();
     });
   });
 </script>
