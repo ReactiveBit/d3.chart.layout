@@ -56,6 +56,16 @@ d3.chart("hierarchy").extend("cluster-tree", {
           this.classed('node-collapsed', function (d) {
             return d._children !== undefined;
           });
+
+
+          this.select("text")
+            .attr("x", function(d) {
+              return d.isLeaf ? 10 : -10;
+            })
+            // TODO: fix weird animation due to change text-anchor.
+            .attr("text-anchor", function(d) {
+              return d.isLeaf ? "start" : "end";
+            });
         },
 
         "merge:transition": function() {
