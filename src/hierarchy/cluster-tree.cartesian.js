@@ -52,16 +52,28 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
       chart.root.x0 = chart._height / 2;
       chart.root.y0 = 0;
 
-      nodes = chart.d3.layout
-        .size([chart._height, chart._width])
-        .nodes(chart.root); // workaround for getting correct chart.root to transform method in hierarchy.js
+      if (chart._nodeSize) {
+        nodes = chart.d3.layout
+          .nodeSize(chart._nodeSize)
+          .nodes(chart.root); // workaround for getting correct chart.root to transform method in hierarchy.js
+      } else {
+        nodes = chart.d3.layout
+          .size([chart._height, chart._width])
+          .nodes(chart.root); // workaround for getting correct chart.root to transform method in hierarchy.js
+      }
 
       chart.trigger("collapse:init");
     }
 
-    nodes = chart.d3.layout
-      .size([chart._height, chart._width])
-      .nodes(chart.root).reverse();
+    if (chart._nodeSize) {
+      nodes = chart.d3.layout
+        .nodeSize(chart._nodeSize)
+        .nodes(chart.root).reverse();
+    } else {
+      nodes = chart.d3.layout
+        .size([chart._height, chart._width])
+        .nodes(chart.root).reverse();
+    }
 
     // Before we proceed, mark leaf nodes
     nodes.forEach(function (d) {
@@ -127,6 +139,25 @@ d3.chart("cluster-tree").extend("cluster-tree.cartesian", {
     }
 
     return this;
+  },
+
+  nodeSize: function (value) {
+    var chart = this;
+
+    if (!arguments.length) {
+      return chart._nodeSize;
+    }
+
+    if (chart._nodeSize !== value) {
+      chart._nodeSize = value;
+      chart.trigger('change:nodeSize');
+
+      if (chart.root) {
+        chart.draw(chart.root);
+      }
+    }
+
+    return chart;
   }
 
 });
