@@ -1,3 +1,6 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import './hierarchy';
 
 d3.chart("hierarchy").extend("cluster-tree", {
 

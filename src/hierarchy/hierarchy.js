@@ -1,3 +1,5 @@
+import * as d3 from 'd3';
+import 'd3.chart';
 
 d3.chart("hierarchy", {
 
@@ -20,7 +22,7 @@ d3.chart("hierarchy", {
 
     chart.d3.zoom = d3.behavior.zoom();
     chart.layers.base = chart.base.append("g");
-    
+
     chart.name(chart._name         || "name");
     chart.value(chart._value       || "value");
     chart.duration(chart._duration || 750);

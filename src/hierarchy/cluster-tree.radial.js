@@ -1,3 +1,6 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import './cluster-tree';
 
 d3.chart("cluster-tree").extend("cluster-tree.radial", {
 
@@ -80,7 +83,7 @@ d3.chart("cluster-tree").extend("cluster-tree.radial", {
     }
 
     this._diameter = _;
-    
+
     this.trigger("change:diameter");
     if( this.root ) {
       this.draw(this.root);

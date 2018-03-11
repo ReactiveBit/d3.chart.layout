@@ -1,9 +1,12 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import '../hierarchy/hierarchy';
 
 d3.chart("hierarchy").extend("pack.nested", {
 
   initialize : function() {
     var chart = this;
-    
+
     chart.d3.layout = d3.layout.pack();
 
     chart._width  = chart.base.attr("width");
@@ -86,7 +89,7 @@ d3.chart("hierarchy").extend("pack.nested", {
     }
 
     return this;
-  }, 
+  },
 
 
   collapsible: function() {

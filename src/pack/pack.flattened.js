@@ -1,3 +1,6 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import '../hierarchy/hierarchy';
 
 d3.chart("hierarchy").extend("pack.flattened", {
 
@@ -6,7 +9,7 @@ d3.chart("hierarchy").extend("pack.flattened", {
     var chart = this;
 
     chart.d3.layout = d3.layout.pack();
-   
+
     chart._width  = chart.base.attr("width");
     chart._height = chart.base.attr("height");
 

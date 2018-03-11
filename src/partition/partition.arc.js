@@ -1,6 +1,9 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import '../hierarchy/hierarchy';
 
 d3.chart("hierarchy").extend("partition.arc", {
- 
+
   initialize : function() {
 
     var chart = this;
@@ -74,7 +77,7 @@ d3.chart("hierarchy").extend("partition.arc", {
       return this._diameter;
     }
 
-    this._diameter = _ - 10;  
+    this._diameter = _ - 10;
 
     this.trigger("change:radius");
     if( this.root ) {

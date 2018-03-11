@@ -1,16 +1,19 @@
+import * as d3 from 'd3';
+import 'd3.chart';
+import '../hierarchy/hierarchy';
 
 d3.chart("hierarchy").extend("partition.rectangle", {
 
   initialize : function() {
 
     var chart = this;
-    
+
     chart.d3.layout = d3.layout.partition();
 
     chart._width  = chart.base.attr("width");
     chart._height = chart.base.attr("height");
 
-   
+
     var x = d3.scale.linear().range([0, chart._width]),
         y = d3.scale.linear().range([0, chart._height]);
 
@@ -31,12 +34,12 @@ d3.chart("hierarchy").extend("partition.rectangle", {
       events: {
         enter: function() {
           var kx = chart._width  / chart.root.dx,
-              ky = chart._height / 1; 
+              ky = chart._height / 1;
 
           this.append("rect")
             .attr("class", function(d) { return d.children ? "parent" : "child"; })
             .attr("width", chart.root.dy * kx)
-            .attr("height", function(d) { return d.dx * ky; }); 
+            .attr("height", function(d) { return d.dx * ky; });
 
           this.append("text")
             .attr("transform", function(d) { return chart.d3.transform(d, ky); })
@@ -103,7 +106,7 @@ d3.chart("hierarchy").extend("partition.rectangle", {
 
       node = d;
     }
-  
+
     return chart;
   }
 });
